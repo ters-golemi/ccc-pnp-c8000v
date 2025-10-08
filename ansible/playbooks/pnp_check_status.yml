@@ -1,0 +1,44 @@
+---
+# PNP Device Status Check Playbook
+# Checks the status of a PNP device
+
+- name: Check PNP Device Status
+  hosts: localhost
+  gather_facts: no
+  
+  vars:
+    config_file: "{{ playbook_dir }}/../../configs/config.yml"
+  
+  tasks:
+    - name: Display status check information
+      debug:
+        msg:
+          - "======================================"
+          - "CHECKING PNP DEVICE STATUS"
+          - "======================================"
+    
+    - name: Execute Python monitor script
+      command: >
+        python3 {{ playbook_dir }}/../../scripts/pnp_monitor.py
+        --config {{ config_file }}
+      register: status_result
+      changed_when: false
+      ignore_errors: yes
+    
+    - name: Display status output
+      debug:
+        var: status_result.stdout_lines
+      when: status_result.stdout_lines is defined
+    
+    - name: Display status errors
+      debug:
+        var: status_result.stderr_lines
+      when: status_result.stderr_lines is defined and status_result.failed
+    
+    - name: Verify status check was successful
+      assert:
+        that:
+          - status_result.rc == 0
+        fail_msg: "Status check failed. Check the output above for details."
+        success_msg: "Status check completed successfully"
+      when: not status_result.failed

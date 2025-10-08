@@ -1,0 +1,78 @@
+---
+# Complete PNP Onboarding Workflow
+# This playbook automates the entire PNP onboarding process
+
+- name: Cisco Catalyst Center PNP Device Onboarding
+  hosts: localhost
+  gather_facts: no
+  
+  vars:
+    # Load Catalyst Center credentials from inventory
+    dnac_host: "{{ hostvars['dnac']['ansible_host'] }}"
+    dnac_username: "{{ hostvars['dnac']['ansible_user'] }}"
+    dnac_password: "{{ hostvars['dnac']['ansible_password'] }}"
+    dnac_verify: false
+    dnac_version: "3.1.0"
+    
+    # Device information from inventory
+    device_serial: "{{ hostvars['v8000-2']['serial_number'] }}"
+    device_hostname: "{{ hostvars['v8000-2']['hostname'] }}"
+    device_site: "{{ hostvars['v8000-2']['site'] }}"
+  
+  tasks:
+    - name: Display workflow information
+      debug:
+        msg:
+          - "======================================"
+          - "PNP ONBOARDING WORKFLOW"
+          - "======================================"
+          - "Catalyst Center: {{ dnac_host }}"
+          - "Device Serial: {{ device_serial }}"
+          - "Device Hostname: {{ device_hostname }}"
+          - "Target Site: {{ device_site }}"
+          - "======================================"
+    
+    - name: Check if device exists in PNP
+      uri:
+        url: "https://{{ dnac_host }}/dna/intent/api/v1/onboarding/pnp-device?serialNumber={{ device_serial }}"
+        method: GET
+        headers:
+          X-Auth-Token: "{{ auth_token }}"
+          Content-Type: "application/json"
+        validate_certs: "{{ dnac_verify }}"
+        status_code: 200
+      register: pnp_device_check
+      vars:
+        auth_token: "{{ lookup('pipe', 'python3 ../scripts/get_token.py ' + dnac_host + ' ' + dnac_username + ' ' + dnac_password) | default('') }}"
+      ignore_errors: yes
+    
+    - name: Display device status
+      debug:
+        msg: "Device found in PNP: {{ pnp_device_check.json | length > 0 }}"
+      when: pnp_device_check is succeeded
+    
+    - name: Pause for user confirmation
+      pause:
+        prompt: "Continue with device claim? (Press Enter to continue, Ctrl+C to abort)"
+    
+    - name: Include device claim playbook
+      import_playbook: pnp_claim_device.yml
+    
+    - name: Wait for claim to complete
+      pause:
+        seconds: 30
+        prompt: "Waiting for device claim to complete..."
+    
+    - name: Include status check playbook
+      import_playbook: pnp_check_status.yml
+    
+    - name: Display completion message
+      debug:
+        msg:
+          - "======================================"
+          - "PNP ONBOARDING COMPLETE"
+          - "======================================"
+          - "Device {{ device_hostname }} ({{ device_serial }}) has been claimed"
+          - "Monitor provisioning status in Catalyst Center"
+          - "Navigate to: Provision > Plug and Play"
+          - "======================================"

@@ -51,7 +51,7 @@ ip dhcp pool PNP_POOL
  option 43 ascii "5A1N;B2;K4;I172.16.1.10;J80"
 ```
 
-Format: `5A1N;B2;K4;I<DNAC-IP>;J80`
+Format: `5A1N;B2;K4;I<Catalyst-Center-IP>;J80`
 
 **Linux ISC DHCP:**
 ```

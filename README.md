@@ -187,7 +187,29 @@ ip route 0.0.0.0 0.0.0.0 $gateway
 
 ## Installation
 
-### 1. Clone the Repository
+### Method 1: Automated Setup (Recommended)
+
+Use the automated setup script for complete environment preparation:
+
+```bash
+# Clone repository
+git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
+cd ccc-pnp-c8000v
+
+# Run automated setup script
+./setup_environment.sh
+```
+
+The setup script automatically handles:
+- Python virtual environment creation and activation
+- Installation of all required dependencies and Ansible collections
+- Example inventory structure creation
+- Environment validation and verification
+- Guidance for next steps
+
+### Method 2: Manual Setup
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git

@@ -32,18 +32,28 @@
           - "Target Site: {{ device_site }}"
           - "======================================"
     
+    - name: Authenticate to DNAC and get token
+      uri:
+        url: "https://{{ dnac_host }}/dna/system/api/v1/auth/token"
+        method: POST
+        user: "{{ dnac_username }}"
+        password: "{{ dnac_password }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: "{{ dnac_verify }}"
+        status_code: 200
+      register: dnac_auth
+    
     - name: Check if device exists in PNP
       uri:
         url: "https://{{ dnac_host }}/dna/intent/api/v1/onboarding/pnp-device?serialNumber={{ device_serial }}"
         method: GET
         headers:
-          X-Auth-Token: "{{ auth_token }}"
+          X-Auth-Token: "{{ dnac_auth.json.Token }}"
           Content-Type: "application/json"
         validate_certs: "{{ dnac_verify }}"
         status_code: 200
       register: pnp_device_check
-      vars:
-        auth_token: "{{ lookup('pipe', 'python3 ../scripts/get_token.py ' + dnac_host + ' ' + dnac_username + ' ' + dnac_password) | default('') }}"
       ignore_errors: yes
     
     - name: Display device status

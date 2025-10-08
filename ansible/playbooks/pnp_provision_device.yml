@@ -1,0 +1,47 @@
+---
+# PNP Device Provisioning Playbook
+# Provisions a claimed device
+
+- name: Provision PNP Device
+  hosts: localhost
+  gather_facts: no
+  
+  vars:
+    config_file: "{{ playbook_dir }}/../../configs/config.yml"
+  
+  tasks:
+    - name: Display provisioning information
+      debug:
+        msg:
+          - "======================================"
+          - "PROVISIONING PNP DEVICE"
+          - "======================================"
+    
+    - name: Execute Python provision script
+      command: >
+        python3 {{ playbook_dir }}/../../scripts/pnp_provision.py
+        --config {{ config_file }}
+      register: provision_result
+      changed_when: false
+      ignore_errors: yes
+    
+    - name: Display provision output
+      debug:
+        var: provision_result.stdout_lines
+      when: provision_result.stdout_lines is defined
+    
+    - name: Display provision errors
+      debug:
+        var: provision_result.stderr_lines
+      when: provision_result.stderr_lines is defined and provision_result.failed
+    
+    - name: Display provisioning notes
+      debug:
+        msg:
+          - "======================================"
+          - "PROVISIONING NOTES"
+          - "======================================"
+          - "Provisioning typically happens automatically after claim"
+          - "Monitor status using: ansible-playbook pnp_check_status.yml"
+          - "Or in Catalyst Center UI: Provision > Plug and Play"
+          - "======================================"

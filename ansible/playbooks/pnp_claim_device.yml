@@ -1,0 +1,54 @@
+---
+# PNP Device Claim Playbook
+# Claims a device to a site in Catalyst Center
+
+- name: Claim PNP Device
+  hosts: localhost
+  gather_facts: no
+  
+  vars:
+    config_file: "{{ playbook_dir }}/../../configs/config.yml"
+  
+  tasks:
+    - name: Display claim information
+      debug:
+        msg:
+          - "======================================"
+          - "CLAIMING PNP DEVICE"
+          - "======================================"
+          - "Loading configuration from inventory..."
+    
+    - name: Execute Python claim script
+      command: >
+        python3 {{ playbook_dir }}/../../scripts/pnp_claim_device.py
+        --config {{ config_file }}
+      register: claim_result
+      changed_when: true
+      ignore_errors: yes
+    
+    - name: Display claim script output
+      debug:
+        var: claim_result.stdout_lines
+      when: claim_result.stdout_lines is defined
+    
+    - name: Display claim script errors
+      debug:
+        var: claim_result.stderr_lines
+      when: claim_result.stderr_lines is defined and claim_result.failed
+    
+    - name: Verify claim was successful
+      assert:
+        that:
+          - claim_result.rc == 0
+        fail_msg: "Device claim failed. Check the output above for details."
+        success_msg: "Device claimed successfully"
+    
+    - name: Display success message
+      debug:
+        msg:
+          - "======================================"
+          - "DEVICE CLAIM SUCCESSFUL"
+          - "======================================"
+          - "Device has been claimed to the site"
+          - "Provisioning will begin automatically"
+          - "======================================"

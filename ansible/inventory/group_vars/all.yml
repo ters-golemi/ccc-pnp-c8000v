@@ -1,0 +1,43 @@
+---
+# Global variables for all hosts
+
+# Catalyst Center settings
+catalyst_center_host: "{{ dnac_host | default('catalyst-center.example.com') }}"
+catalyst_center_username: "{{ dnac_username | default('admin') }}"
+catalyst_center_password: "{{ dnac_password | default('C1sco12345') }}"
+catalyst_center_verify_ssl: "{{ dnac_verify | default(false) }}"
+catalyst_center_version: "{{ dnac_version | default('3.1.0') }}"
+
+# Timeout and retry settings
+pnp_discovery_timeout: 300
+pnp_provisioning_timeout: 600
+pnp_polling_interval: 30
+task_retry_count: 3
+task_retry_delay: 10
+
+# Feature flags
+skip_image_upgrade: true
+auto_assign_site: true
+enable_debug: false
+
+# Credentials
+default_cli_username: admin
+default_cli_password: C1sco12345
+default_enable_password: C1sco12345
+
+# SNMP settings
+snmp_version: v2c
+snmp_community: public
+
+# DNS and NTP
+dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+
+ntp_servers:
+  - time.nist.gov
+  - time.google.com
+
+# Logging
+log_level: INFO
+log_file: /tmp/ansible_pnp.log

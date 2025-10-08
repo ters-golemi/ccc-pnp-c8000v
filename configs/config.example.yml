@@ -1,0 +1,129 @@
+# Cisco Catalyst Center PNP Configuration Example
+# Copy this file to config.yml and update with your environment details
+
+# Catalyst Center (DNA Center) Configuration
+catalyst_center:
+  # Hostname or IP address of Catalyst Center
+  host: "catalyst-center.example.com"
+  
+  # API credentials
+  username: "admin"
+  password: "C1sco12345"
+  
+  # SSL verification (set to false for self-signed certificates)
+  verify_ssl: false
+  
+  # API version
+  version: "3.1.0"
+
+# Device Configuration
+device:
+  # Device serial number (found on device label or "show version")
+  serial_number: "FCH1234ABCD"
+  
+  # Desired hostname for the device
+  hostname: "v8000-2"
+  
+  # Site hierarchy where device will be assigned
+  # Format: Global/Region/Building/Floor
+  site: "Global/US/San_Jose/Floor1"
+  
+  # Device type/model
+  device_type: "Cisco Catalyst 8000V"
+  
+  # Device platform ID
+  platform: "C8000V"
+
+# Network Configuration
+network:
+  # WAN Interface (typically GigabitEthernet1)
+  wan_interface:
+    name: "GigabitEthernet1"
+    ip: "192.168.1.10"
+    mask: "255.255.255.0"
+    gateway: "192.168.1.1"
+    description: "WAN Interface"
+  
+  # LAN Interface (typically GigabitEthernet2)
+  lan_interface:
+    name: "GigabitEthernet2"
+    ip: "10.0.0.1"
+    mask: "255.255.255.0"
+    description: "LAN Interface"
+  
+  # DNS servers
+  dns_servers:
+    - "8.8.8.8"
+    - "8.8.4.4"
+  
+  # NTP servers
+  ntp_servers:
+    - "time.nist.gov"
+
+# Template Configuration (Optional)
+template:
+  # Template name in Catalyst Center
+  name: "C8000V-Day0-Template"
+  
+  # Template project
+  project: "Onboarding Configuration"
+  
+  # Template parameters (variables to substitute)
+  parameters:
+    hostname: "v8000-2"
+    wan_ip: "192.168.1.10"
+    wan_mask: "255.255.255.0"
+    lan_ip: "10.0.0.1"
+    lan_mask: "255.255.255.0"
+    gateway: "192.168.1.1"
+    domain_name: "example.com"
+
+# Credentials Configuration
+credentials:
+  # CLI credentials
+  cli:
+    username: "admin"
+    password: "C1sco12345"
+    enable_password: "C1sco12345"
+  
+  # SNMP credentials
+  snmp:
+    version: "v2c"
+    community: "public"
+    # For SNMPv3:
+    # username: "snmpuser"
+    # auth_type: "SHA"
+    # auth_password: "authpass"
+    # privacy_type: "AES128"
+    # privacy_password: "privpass"
+
+# Advanced Options
+options:
+  # Wait for device to be discovered (seconds)
+  discovery_timeout: 300
+  
+  # Wait for provisioning to complete (seconds)
+  provisioning_timeout: 600
+  
+  # Polling interval for status checks (seconds)
+  polling_interval: 30
+  
+  # Skip image upgrade during provisioning
+  skip_image_upgrade: true
+  
+  # Auto-assign to site
+  auto_assign_site: true
+  
+  # Enable debug logging
+  debug: false
+
+# Logging Configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+  
+  # Log file location
+  file: "logs/pnp_automation.log"
+  
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

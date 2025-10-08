@@ -131,7 +131,7 @@ def display_all_devices(devices):
             device_info.get('pid', 'N/A'),
             device_info.get('state', 'N/A'),
             device_info.get('source', 'N/A'),
-            device.get('id', 'N/A')[:20] + '...'
+            (device.get('id', 'N/A')[:20] + '...' if len(device.get('id', 'N/A')) > 20 else device.get('id', 'N/A'))
         ])
     
     headers = ['Serial Number', 'Hostname', 'Model', 'State', 'Source', 'Device ID']

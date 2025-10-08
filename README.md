@@ -22,6 +22,14 @@ The automation focuses on onboarding the `v8000-2` router through the PNP proces
 - [Workflow](#workflow)
 - [Troubleshooting](#troubleshooting)
 
+## Additional Documentation
+
+- **[Complete Ansible Deployment Guide](docs/ANSIBLE_DEPLOYMENT_GUIDE.md)** - Comprehensive step-by-step deployment procedures
+- **[Quick Start Guide](QUICK_START.md)** - Get started in under 10 minutes
+- **[Workflow Details](docs/WORKFLOW.md)** - Detailed PNP process explanation
+- **[API Reference](docs/API_REFERENCE.md)** - Catalyst Center API documentation
+- **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
 ## Prerequisites
 
 ### Hardware Requirements
@@ -281,42 +289,118 @@ source .env
 
 ## Usage
 
-### Method 1: Using Python Scripts
+### Complete Step-by-Step Deployment Process
 
-#### Step 1: Claim Device to PNP
+#### Prerequisites Validation
+
+1. **Environment Setup Verification**
 ```bash
-python3 scripts/pnp_claim_device.py --config configs/config.yml
+# Activate project environment
+source venv/bin/activate
+
+# Verify connectivity to Catalyst Center
+ansible catalyst_center -i inventory/hosts.yml -m ping
+
+# Validate inventory configuration
+ansible-inventory --list -i inventory/hosts.yml | head -20
+
+# Test playbook syntax
+ansible-playbook --syntax-check ansible/playbooks/pnp_onboard_device.yml -i inventory/hosts.yml
 ```
 
-#### Step 2: Monitor PNP Status
+#### Method 1: Complete Ansible Automation Workflow
+
+2. **Execute Pre-Deployment Checks**
 ```bash
-python3 scripts/pnp_monitor.py --config configs/config.yml --serial FCH1234ABCD
+# Check current device status in Catalyst Center
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_check_status.yml -v
+
+# Verify network prerequisites
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/validate_prerequisites.yml -v
 ```
 
-#### Step 3: Complete Provisioning
+3. **Device Claiming and Registration**
 ```bash
-python3 scripts/pnp_provision.py --config configs/config.yml --serial FCH1234ABCD
+# Claim device in Catalyst Center PNP database
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_claim_device.yml -v
+
+# Verify device is properly claimed
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_check_status.yml -v
 ```
 
-### Method 2: Using Ansible Playbooks
-
-#### Run Complete PNP Workflow
+4. **Complete PNP Onboarding Process**
 ```bash
-cd ansible
-ansible-playbook -i inventory/hosts.yml playbooks/pnp_onboard_device.yml
+# Execute full onboarding workflow
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_onboard_device.yml -v
+
+# Monitor with detailed logging if needed
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_onboard_device.yml -vvv
 ```
 
-#### Run Individual Tasks
+5. **Device Provisioning and Final Configuration**
 ```bash
-# Claim device only
-ansible-playbook -i inventory/hosts.yml playbooks/pnp_claim_device.yml
+# Apply final device configuration and site assignment
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_provision_device.yml -v
 
-# Check PNP status
-ansible-playbook -i inventory/hosts.yml playbooks/pnp_check_status.yml
-
-# Provision device
-ansible-playbook -i inventory/hosts.yml playbooks/pnp_provision_device.yml
+# Validate successful provisioning
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/validate_deployment.yml -v
 ```
+
+#### Method 2: Python Script Automation
+
+6. **Alternative Python-based Approach**
+```bash
+# Configure environment variables
+export DNAC_HOST="192.168.1.100"
+export DNAC_USERNAME="admin"
+export DNAC_PASSWORD="Cisco123!"
+
+# Execute device claiming
+python3 scripts/pnp_claim_device.py --config configs/config.yml --serial "9ABCDEFGHIJ"
+
+# Monitor onboarding progress
+python3 scripts/pnp_monitor.py --config configs/config.yml --serial "9ABCDEFGHIJ" --interval 30
+
+# Complete device provisioning
+python3 scripts/pnp_provision.py --config configs/config.yml --serial "9ABCDEFGHIJ"
+```
+
+#### Advanced Usage Scenarios
+
+7. **Batch Processing Multiple Devices**
+```bash
+# Process multiple devices with controlled parallelism
+ansible-playbook -i inventory/batch_hosts.yml ansible/playbooks/pnp_onboard_device.yml --forks 3
+
+# Target specific device groups
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_onboard_device.yml --limit branch_routers
+```
+
+8. **Selective Task Execution**
+```bash
+# Start from specific task (resume partial deployment)
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_onboard_device.yml --start-at-task="Provision device configuration"
+
+# Execute only specific task tags
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_onboard_device.yml --tags "claim,configure"
+
+# Skip specific tasks
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/pnp_onboard_device.yml --skip-tags "validation"
+```
+
+9. **Monitoring and Troubleshooting**
+```bash
+# Real-time monitoring (if monitoring script exists)
+./scripts/monitor_pnp.sh
+
+# Check deployment logs
+tail -f ansible.log
+
+# Generate deployment report
+ansible-playbook -i inventory/hosts.yml ansible/playbooks/generate_deployment_report.yml
+```
+
+For detailed deployment procedures, see: [Complete Ansible Deployment Guide](docs/ANSIBLE_DEPLOYMENT_GUIDE.md)
 
 ### Method 3: Using the Complete Automation Script
 

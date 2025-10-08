@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get started with PNP automation in 5 minutes!
+Get started with PNP automation in under 10 minutes using this step-by-step guide.
 
 ## Prerequisites Check
 
@@ -8,46 +8,95 @@ Before you begin, ensure you have:
 
 - [ ] Ubuntu workstation (20.04 LTS or later)
 - [ ] Network connectivity to Catalyst Center
-- [ ] Catalyst Center 3.1.X credentials
-- [ ] Device serial number
-- [ ] Site created in Catalyst Center
+- [ ] Catalyst Center 3.1.X credentials with API access
+- [ ] Device serial number for target C8000v router
+- [ ] Site hierarchy created in Catalyst Center
+- [ ] DHCP server configured with Option 43
+- [ ] Network profile configured for C8000v devices
 
-## Quick Setup (5 Minutes)
+## Quick Setup (Under 10 Minutes)
 
-### 1. Install Tools (2 minutes)
+### 1. Install Required Tools (3 minutes)
 
 ```bash
-# Update system
-sudo apt update
+# Update system packages
+sudo apt update && sudo apt upgrade -y
 
-# Install Python, Ansible, and Git
-sudo apt install -y python3 python3-pip python3-venv ansible git
+# Install Python, Ansible, Git, and network tools
+sudo apt install -y python3 python3-pip python3-venv ansible git curl wget net-tools
+
+# Install additional development tools
+sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
+
+# Add Ansible repository for latest version
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install -y ansible
 
 # Verify installations
-python3 --version
-ansible --version
+echo "Python version: $(python3 --version)"
+echo "Ansible version: $(ansible --version | head -1)"
+echo "Git version: $(git --version)"
 ```
 
-### 2. Clone and Setup (2 minutes)
+### 2. Clone Repository and Setup Environment (3 minutes)
 
 ```bash
+# Create project directory
+mkdir -p ~/ansible-projects
+cd ~/ansible-projects
+
 # Clone repository
 git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
 cd ccc-pnp-c8000v
 
-# Create virtual environment
+# Create and activate virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# Install dependencies
+# Upgrade pip and install dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
+
+# Install Ansible collections
+ansible-galaxy collection install cisco.dnac cisco.ios community.general
+
+# Verify setup
+ansible --version
+pip list | grep -E "(requests|urllib3|ansible)"
 ```
 
-### 3. Configure (1 minute)
+### 3. Configure Project Settings (2 minutes)
 
 ```bash
+# Create inventory directory structure
+mkdir -p inventory/{group_vars,host_vars}
+
 # Copy example configuration
 cp configs/config.example.yml configs/config.yml
+
+# Create inventory file with your environment details
+cat > inventory/hosts.yml << 'EOF'
+---
+all:
+  children:
+    dnac:
+      hosts:
+        catalyst_center:
+          ansible_host: "YOUR_CATALYST_CENTER_IP"
+          ansible_user: "YOUR_API_USERNAME"
+          ansible_password: "YOUR_API_PASSWORD"
+          ansible_connection: local
+    
+    devices:
+      hosts:
+        target_device:
+          serial_number: "YOUR_DEVICE_SERIAL"
+          hostname: "YOUR_DEVICE_HOSTNAME"
+          site: "Global/YOUR_SITE_HIERARCHY"
+          device_type: "Cisco Catalyst 8000V"
+EOF
+
+echo "Update the inventory/hosts.yml file with your actual environment details"
 
 # Edit configuration with your details
 vim configs/config.yml

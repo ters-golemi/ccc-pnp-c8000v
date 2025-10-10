@@ -24,6 +24,7 @@ The automation focuses on onboarding the `v8000-2` router through the PNP proces
 
 ## Additional Documentation
 
+- **[Ubuntu Admin PC Setup Guide](docs/UBUNTU_ADMIN_PC_SETUP.md)** - Complete Ubuntu workstation preparation for PNP automation
 - **[Complete Ansible Deployment Guide](docs/ANSIBLE_DEPLOYMENT_GUIDE.md)** - Comprehensive step-by-step deployment procedures
 - **[Quick Start Guide](QUICK_START.md)** - Get started in under 10 minutes
 - **[Workflow Details](docs/WORKFLOW.md)** - Detailed PNP process explanation
@@ -53,55 +54,19 @@ The automation focuses on onboarding the `v8000-2` router through the PNP proces
 
 ## Ubuntu Workstation Setup
 
-### 1. Update System Packages
+For detailed Ubuntu workstation preparation instructions, see the **[Ubuntu Admin PC Setup Guide](docs/UBUNTU_ADMIN_PC_SETUP.md)**.
 
-```bash
-sudo apt update && sudo apt upgrade -y
-```
+### Quick Setup Summary
 
-### 2. Install Python 3 and pip
+1. **System Requirements:** Ubuntu 20.04 LTS or later, 4GB RAM, 20GB storage
+2. **Update System:** `sudo apt update && sudo apt upgrade -y`
+3. **Install Python:** `sudo apt install -y python3 python3-pip python3-venv`
+4. **Install Ansible:** `sudo add-apt-repository ppa:ansible/ansible && sudo apt install ansible`
+5. **Install Collections:** `ansible-galaxy collection install cisco.dnac cisco.ios`
+6. **Clone Repository:** `git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git`
+7. **Run Setup:** `cd ccc-pnp-c8000v && ./setup_environment.sh`
 
-```bash
-sudo apt install -y python3 python3-pip python3-venv
-```
-
-Verify installation:
-```bash
-python3 --version
-pip3 --version
-```
-
-### 3. Install Ansible
-
-```bash
-sudo apt install -y software-properties-common
-sudo add-apt-repository --yes --update ppa:ansible/ansible
-sudo apt install -y ansible
-```
-
-Verify installation:
-```bash
-ansible --version
-```
-
-### 4. Install Git
-
-```bash
-sudo apt install -y git
-```
-
-### 5. Install Additional Tools
-
-```bash
-sudo apt install -y curl wget vim net-tools
-```
-
-### 6. Configure SSH (if needed)
-
-```bash
-sudo apt install -y openssh-client
-ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-```
+> 📖 **For complete step-by-step instructions including network tools, security configuration, and troubleshooting, refer to the [Ubuntu Admin PC Setup Guide](docs/UBUNTU_ADMIN_PC_SETUP.md)**
 
 ## Cisco Catalyst Center Setup
 

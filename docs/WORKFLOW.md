@@ -260,10 +260,10 @@ The PNP onboarding process automates the initial configuration of network device
    sudo apt install -y python3 python3-pip ansible git
    ```
 
-2. **Clone Repository**
+2. **Navigate to Project Directory**
 
    ```bash
-   git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
+   # Access project directory (assumes project files are available locally)
    cd ccc-pnp-c8000v
    ```
 

@@ -846,11 +846,9 @@ sudo apt update && sudo apt upgrade -y
 
 After completing this preparation procedure:
 
-1. **Clone Repository:** Get the CCC PNP C8000V automation project:
+1. **Navigate to Project:** Access the CCC PNP C8000V automation project directory:
    ```bash
-   cd ~/ansible-projects
-   git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
-   cd ccc-pnp-c8000v
+   cd ~/ansible-projects/ccc-pnp-c8000v
    ```
 
 2. **Run Setup Script:** Execute the automated environment setup:

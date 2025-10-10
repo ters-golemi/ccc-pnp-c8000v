@@ -198,13 +198,8 @@ ansible-galaxy collection list
 ### Step 1: Clone Project Repository
 
 ```bash
-# Create projects directory
-mkdir -p ~/ansible-projects
-cd ~/ansible-projects
-
-# Clone the repository
-git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
-cd ccc-pnp-c8000v
+# Navigate to projects directory (assumes project files are available locally)
+cd ~/ansible-projects/ccc-pnp-c8000v
 
 # Verify project structure
 ls -la

@@ -63,8 +63,7 @@ For detailed Ubuntu workstation preparation instructions, see the **[Ubuntu Admi
 3. **Install Python:** `sudo apt install -y python3 python3-pip python3-venv`
 4. **Install Ansible:** `sudo add-apt-repository ppa:ansible/ansible && sudo apt install ansible`
 5. **Install Collections:** `ansible-galaxy collection install cisco.dnac cisco.ios`
-6. **Clone Repository:** `git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git`
-7. **Run Setup:** `cd ccc-pnp-c8000v && ./setup_environment.sh`
+6. **Run Setup:** Navigate to project directory and execute `./setup_environment.sh`
 
 > 📖 **For complete step-by-step instructions including network tools, security configuration, and troubleshooting, refer to the [Ubuntu Admin PC Setup Guide](docs/UBUNTU_ADMIN_PC_SETUP.md)**
 
@@ -157,8 +156,7 @@ ip route 0.0.0.0 0.0.0.0 $gateway
 Use the automated setup script for complete environment preparation:
 
 ```bash
-# Clone repository
-git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
+# Navigate to project directory (assumes project files are already available locally)
 cd ccc-pnp-c8000v
 
 # Run automated setup script
@@ -174,10 +172,10 @@ The setup script automatically handles:
 
 ### Method 2: Manual Setup
 
-#### 1. Clone the Repository
+#### 1. Navigate to Project Directory
 
 ```bash
-git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
+# Change to the project directory (assumes project files are available locally)
 cd ccc-pnp-c8000v
 ```
 

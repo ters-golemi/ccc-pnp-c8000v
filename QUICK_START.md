@@ -54,12 +54,10 @@ echo "Python: $(python3 --version)"
 echo "Ansible: $(ansible --version | head -1)"
 ```
 
-### 2. Clone Repository and Setup Environment (2 minutes)
+### 2. Setup Project Environment (2 minutes)
 
 ```bash
-# Create project directory and clone
-mkdir -p ~/ansible-projects && cd ~/ansible-projects
-git clone https://github.com/ters-golemi/ccc-pnp-c8000v.git
+# Navigate to project directory (assumes project files are available locally)
 cd ccc-pnp-c8000v
 
 # Run automated setup script
